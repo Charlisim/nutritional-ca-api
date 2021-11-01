@@ -17,9 +17,17 @@ services:
     command: /start
     ports:
       - "5000:5000"
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 3s
+        max_attempts: 3
+        window: 120s
 
   postgres:
     image: postgres:13.2
+    volumes:
+    - postgres_data:/var/lib/postgresql/data:Z
     env_file:
       - ./.envs/local/.postgres
     ports:

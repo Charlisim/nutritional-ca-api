@@ -1,4 +1,5 @@
 # General
 # ------------------------------------------------------------------------------
 USE_DOCKER=yes
-FLASK_APP=src.run
+FLASK_APP=src/run.py
+SECRET_KEY=3948asdskasd
