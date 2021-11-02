@@ -8,7 +8,6 @@ from core.db import BaseModelMixin, db
 class Company(db.Model, BaseModelMixin):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(60))
-    created_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
     def __repr__(self) -> str:
         return "%s" % self.name
@@ -19,14 +18,6 @@ food_identifier = db.Table(
     db.Column("food_id", db.Integer, db.ForeignKey("food.id"), primary_key=True),
     db.Column("identifiers", db.String(100), primary_key=True),
     db.Column("identifier_name", db.String(100), primary_key=True),
-)
-
-food_ingredients = db.Table(
-    "food_ingredients",
-    db.Column("food_id", db.Integer, db.ForeignKey("food.id"), primary_key=True),
-    db.Column("ingredient_id", db.Integer, db.ForeignKey("ingredients.id"), primary_key=True),
-    db.Column("order", db.Integer),
-    db.Column("created_date", db.DateTime, default=datetime.utcnow),
 )
 
 food_nutrition_attributes = db.Table(
@@ -73,23 +64,28 @@ class Ingredients(db.Model, BaseModelMixin):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(150), unique=True)
     created_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    foods = db.relationship("FoodIngredients", backref=db.backref("ingredients"))
 
     def __repr__(self) -> str:
         return "%s" % self.name
 
 
+class FoodIngredients(db.Model, BaseModelMixin):
+    __tablename__ = "food_ingredients"
+    food_id = db.Column(db.Integer, db.ForeignKey("food.id"), primary_key=True)
+    ingredient_id = db.Column(db.Integer, db.ForeignKey("ingredients.id"), primary_key=True)
+    order = db.Column(db.String(50))
+
+
 class Food(db.Model, BaseModelMixin):
+    __tablename__ = "food"
+
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(150))
     created_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     company_id = db.Column(db.Integer, db.ForeignKey("company.id"), nullable=True)
     company = db.relationship("Company", backref=db.backref("foods"), lazy=True)
-    ingredients = db.relationship(
-        "Ingredients",
-        secondary=food_ingredients,
-        lazy="subquery",
-        backref=db.backref("foods", lazy=True),
-    )
+    ingredients = db.relationship("FoodIngredients", backref=db.backref("food"))
 
     def __repr__(self) -> str:
         return "%s" % self.name
