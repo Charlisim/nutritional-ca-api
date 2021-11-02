@@ -1,6 +1,7 @@
+from flask import render_template
+
 from core import app
 from models import Food
-from flask import render_template
 
 
 @app.route("/")

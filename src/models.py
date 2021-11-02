@@ -1,14 +1,11 @@
-from core import app
-from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
-
 from datetime import datetime
 
-db = SQLAlchemy(app)
-migrate = Migrate(app, db)
+from flask_sqlalchemy import SQLAlchemy
+
+from core.db import BaseModelMixin, db
 
 
-class Company(db.Model):
+class Company(db.Model, BaseModelMixin):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(60))
     created_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
@@ -27,9 +24,7 @@ food_identifier = db.Table(
 food_ingredients = db.Table(
     "food_ingredients",
     db.Column("food_id", db.Integer, db.ForeignKey("food.id"), primary_key=True),
-    db.Column(
-        "ingredient_id", db.Integer, db.ForeignKey("ingredients.id"), primary_key=True
-    ),
+    db.Column("ingredient_id", db.Integer, db.ForeignKey("ingredients.id"), primary_key=True),
     db.Column("order", db.Integer),
     db.Column("created_date", db.DateTime, default=datetime.utcnow),
 )
@@ -49,7 +44,7 @@ food_nutrition_attributes = db.Table(
 )
 
 
-class NutritionAttribute(db.Model):
+class NutritionAttribute(db.Model, BaseModelMixin):
     __tablename__ = "nutrition_attribute"
 
     id = db.Column(db.Integer, primary_key=True)
@@ -61,7 +56,7 @@ class NutritionAttribute(db.Model):
         return "%s" % self.name
 
 
-class UnitOfMeasure(db.Model):
+class UnitOfMeasure(db.Model, BaseModelMixin):
     __tablename__ = "uom"
 
     id = db.Column(db.Integer, primary_key=True)
@@ -74,7 +69,7 @@ class UnitOfMeasure(db.Model):
         return "%s" % self.name
 
 
-class Ingredients(db.Model):
+class Ingredients(db.Model, BaseModelMixin):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(150), unique=True)
     created_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
@@ -83,7 +78,7 @@ class Ingredients(db.Model):
         return "%s" % self.name
 
 
-class Food(db.Model):
+class Food(db.Model, BaseModelMixin):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(150))
     created_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
