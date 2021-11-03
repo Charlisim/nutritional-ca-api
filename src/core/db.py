@@ -6,6 +6,20 @@ db = SQLAlchemy()
 
 
 class BaseModelMixin:
+    @classmethod
+    def get_or_create(cls, *args, **kwargs):
+        print(cls)
+        print(args)
+        print(kwargs)
+        instance = db.session.query(cls).filter_by(**kwargs).first()
+        if instance:
+            return instance, False
+        else:
+            instance = cls(**kwargs)
+            db.session.add(instance)
+            db.session.commit()
+            return instance, True
+
     def save(self):
         db.session.add(self)
         db.session.commit()

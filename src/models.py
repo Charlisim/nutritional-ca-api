@@ -43,7 +43,6 @@ class NutritionAttribute(db.Model, BaseModelMixin):
     name = db.Column(db.String(150), unique=True)
     parent_id = db.Column(db.Integer, db.ForeignKey("nutrition_attribute.id"))
     parent = db.relationship("NutritionAttribute", remote_side=[id])
-    created_date = db.Column(db.DateTime, nullable=True, default=datetime.utcnow)
 
     def __repr__(self) -> str:
         return "%s" % self.name
@@ -75,7 +74,9 @@ class Ingredients(db.Model, BaseModelMixin):
 class FoodIngredients(db.Model, BaseModelMixin):
     __tablename__ = "food_ingredients"
     food_id = db.Column(db.Integer, db.ForeignKey("food.id"), primary_key=True)
-    ingredient_id = db.Column(db.Integer, db.ForeignKey("ingredients.id"), primary_key=True)
+    ingredient_id = db.Column(
+        db.Integer, db.ForeignKey("ingredients.id"), primary_key=True
+    )
     order = db.Column(db.String(50))
 
 
@@ -91,9 +92,3 @@ class Food(db.Model, BaseModelMixin):
 
     def __repr__(self) -> str:
         return "%s" % self.name
-
-
-if __name__ == "__main__":
-    db.create_all()
-
-    db.session.commit()
