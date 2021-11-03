@@ -6,9 +6,6 @@ db = SQLAlchemy()
 
 
 class BaseModelMixin:
-
-    created_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-
     def save(self):
         db.session.add(self)
         db.session.commit()

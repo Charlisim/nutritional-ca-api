@@ -8,6 +8,7 @@ from core.db import BaseModelMixin, db
 class Company(db.Model, BaseModelMixin):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(60))
+    created_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
     def __repr__(self) -> str:
         return "%s" % self.name
@@ -42,6 +43,7 @@ class NutritionAttribute(db.Model, BaseModelMixin):
     name = db.Column(db.String(150), unique=True)
     parent_id = db.Column(db.Integer, db.ForeignKey("nutrition_attribute.id"))
     parent = db.relationship("NutritionAttribute", remote_side=[id])
+    created_date = db.Column(db.DateTime, nullable=True, default=datetime.utcnow)
 
     def __repr__(self) -> str:
         return "%s" % self.name

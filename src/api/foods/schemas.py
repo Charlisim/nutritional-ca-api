@@ -12,6 +12,14 @@ class IngredientsSchema(ma.Schema):
         )
 
 
+class NutritionAttributeSchema(ma.Schema):
+    attribute_id = fields.Integer()
+    attribute_name = fields.String()
+    attribute_value = fields.Float()
+    attribute_uom_id = fields.Integer()
+    attribute_uom_name = fields.String()
+
+
 class FoodIngredientsCreateSchema(ma.Schema):
     class Meta:
         fields = ("ingredients", "order")
@@ -22,11 +30,10 @@ class FoodIngredientsCreateSchema(ma.Schema):
 class FoodSchema(ma.Schema):
     class Meta:
         # Fields to expose
-        fields = ("id", "name", "ingredients", "company")
+        fields = ("id", "name", "ingredients", "nutrition_facts", "company")
 
-    ingredients = fields.Nested(
-        lambda: FoodIngredientsCreateSchema(only=("ingredients.name", "order")), many=True
-    )
+    ingredients = fields.Nested(lambda: FoodIngredientsCreateSchema(), many=True)
+    nutrition_facts = fields.Nested(lambda: NutritionAttributeSchema(), many=True)
     company = fields.Nested(CompanySchema())
 
 
